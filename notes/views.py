@@ -1,7 +1,4 @@
-from typing import List
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render
-from django.http import Http404
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -43,13 +40,15 @@ class NotesListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.notes.all()
 
-class NotesDetailView(DetailView):
+class NotesDetailView(LoginRequiredMixin, DetailView):
     model = Notes
     context_object_name = "note"
+    login_url = "/login"
 
-def detail(request, pk):
-    try:
-        note = Notes.objects.get(pk=pk)
-    except Notes.DoesNotExist:
-        raise Http404("Note doesn't exist")
-    return render(request, 'notes/notes_detail.html', {'note': note})
+#I don't know when this was removed, but in the training this is not in the final project code
+#def detail(request, pk):
+#    try:
+#        note = Notes.objects.get(pk=pk)
+#    except Notes.DoesNotExist:
+#        raise Http404("Note doesn't exist")
+#    return render(request, 'notes/notes_detail.html', {'note': note})
